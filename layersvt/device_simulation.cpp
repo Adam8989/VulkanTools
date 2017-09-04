@@ -868,6 +868,25 @@ assert(dt->EnumerateInstanceLayerProperties);
     instance_arrayof_layer_properties.push_back(null_layer);
 #endif
 
+#ifdef ENABLE_INSTANCE_EXTENSIONS
+    // Get list of instance extensions from all layers, including null_layer
+assert(dt->EnumerateInstanceExtensionProperties);
+    instance_arrayof_extension_properties.clear();
+    for(const auto &layer : instance_arrayof_layer_properties) {
+        const char*const layer_name = (layer.layerName[0]) ? layer.layerName : nullptr;
+        ArrayOfVkExtensionProperties instance_extensions;
+        result = EnumerateAll<VkExtensionProperties>(&instance_extensions, [&](uint32_t *count, VkExtensionProperties *results) {
+            return dt->EnumerateInstanceExtensionProperties(layer_name, count, results);
+        });
+        if (result) {
+            return result;
+        }
+        // Append this layer's extensions to the instance extension list.
+        // TODO should this keep extensions separate by layer, rather than one be list?
+        VectorAppend( &instance_arrayof_extension_properties, &instance_extensions);
+    }
+#endif
+
     std::vector<VkPhysicalDevice> physical_devices;
     result = EnumerateAll<VkPhysicalDevice>(&physical_devices, [&](uint32_t *count, VkPhysicalDevice *results) {
         return dt->EnumeratePhysicalDevices(*pInstance, count, results);

@@ -904,6 +904,25 @@ assert(dt->EnumerateInstanceExtensionProperties);
         dt->GetPhysicalDeviceFeatures(physical_device, &pdd.physical_device_features_);
         dt->GetPhysicalDeviceMemoryProperties(physical_device, &pdd.physical_device_memory_properties_);
 
+#ifdef ENABLE_DEVICE_EXTENSIONS
+        // Get list of device extensions from all layers, including null_layer
+assert(dt->EnumerateDeviceExtensionProperties);
+        pdd.arrayof_extension_properties_.clear();
+        for(const auto &layer : instance_arrayof_layer_properties) {
+            const char*const layer_name = (layer.layerName[0]) ? layer.layerName : nullptr;
+            ArrayOfVkExtensionProperties device_extensions;
+            result = EnumerateAll<VkExtensionProperties>(&device_extensions, [&](uint32_t *count, VkExtensionProperties *results) {
+                return dt->EnumerateDeviceExtensionProperties(physical_device, layer_name, count, results);
+            });
+            if (result) {
+                return result;
+            }
+            // Append this layer's extensions to the device extension list.
+            // TODO should this keep extensions separate by layer, rather than one be list?
+            VectorAppend( &pdd.arrayof_extension_properties_, &device_extensions);
+        }
+#endif
+
 #ifdef ENABLE_INSTANCE_LAYERS
         // Remove the temporary null_layer
         assert(instance_arrayof_layer_properties.size() > 0);

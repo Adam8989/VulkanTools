@@ -697,8 +697,8 @@ VKAPI_ATTR VkResult VKAPI_CALL CreateInstance(const VkInstanceCreateInfo *pCreat
     const auto dt = instance_dispatch_table(*pInstance);
 
     std::vector<VkPhysicalDevice> physical_devices;
-    result = EnumerateAll<VkPhysicalDevice>(&physical_devices, [&](uint32_t *count, VkPhysicalDevice *values) {
-        return dt->EnumeratePhysicalDevices(*pInstance, count, values);
+    result = EnumerateAll<VkPhysicalDevice>(&physical_devices, [&](uint32_t *count, VkPhysicalDevice *results) {
+        return dt->EnumeratePhysicalDevices(*pInstance, count, results);
     });
     if (result) {
         return result;

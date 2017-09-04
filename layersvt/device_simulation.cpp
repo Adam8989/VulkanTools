@@ -221,7 +221,7 @@ VkResult EnumerateAll(std::vector<T> *vect, std::function<VkResult(uint32_t *, T
     do {
         uint32_t count = 0;
         result = func(&count, nullptr);
-        assert(!result);
+        assert(result == VK_SUCCESS);
         vect->resize(count);
         result = func(&count, vect->data());
     } while (result == VK_INCOMPLETE);

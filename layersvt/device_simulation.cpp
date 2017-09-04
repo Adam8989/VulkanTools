@@ -277,6 +277,8 @@ class PhysicalDeviceData {
     ArrayOfVkExtensionProperties arrayof_extension_properties_;
     ArrayOfVkQueueFamilyProperties arrayof_queue_family_properties_;
     ArrayOfVkFormatProperties arrayof_format_properties_;
+    // TODO FUTURE STORAGE Other per-PhysicalDevice Vulkan structures go here.
+    // NOTE: There is no ArrayOfVkLayerProperties for PhysicalDevices; layers are per-Instance only.
 
    private:
     PhysicalDeviceData() = delete;
@@ -326,6 +328,7 @@ class JsonLoader {
     void ApplyOverrides(const Json::Value &value, VkExtensionProperties *dest);
     void ApplyOverrides(const Json::Value &value, ArrayOfVkExtensionProperties *dest);
     void ApplyOverrides(const Json::Value &value, VkExtent3D *dest);
+    // TODO FUTURE DECLARATION Other ApplyOverrides() method declarations go here.
 
     void GetValue(const Json::Value &value, float *dest) {
         if (!value.isNull()) {
@@ -427,6 +430,9 @@ bool JsonLoader::LoadFile(const char *filename) {
             ApplyOverrides(root["ArrayOfVkFormatProperties"], &pdd_.arrayof_format_properties_);
             ApplyOverrides(root["ArrayOfVkQueueFamilyProperties"], &pdd_.arrayof_queue_family_properties_);
             ApplyOverrides(root["ArrayOfVkExtensionProperties"], &pdd_.arrayof_extension_properties_);
+            // TODO FUTURE OVERRIDE Other ApplyOverrides() method calls go here.
+            // How to handle the ArrayOfVkLayerProperties section of devsim json?  Layers are not per-Device.
+            // ApplyOverrides(root["ArrayOfVkLayerProperties"], ???);
             break;
         case SchemaId::kUnknown:
         default:
@@ -905,6 +911,7 @@ assert(dt->EnumerateInstanceExtensionProperties);
         dt->GetPhysicalDeviceProperties(physical_device, &pdd.physical_device_properties_);
         dt->GetPhysicalDeviceFeatures(physical_device, &pdd.physical_device_features_);
         dt->GetPhysicalDeviceMemoryProperties(physical_device, &pdd.physical_device_memory_properties_);
+        // TODO FUTURE INITIALIZATION Other dt->Get*(physical_device) function calls go here.
 
 // void vkGetPhysicalDeviceQueueFamilyProperties( VkPhysicalDevice physicalDevice, uint32_t* pQueueFamilyPropertyCount, VkQueueFamilyProperties* pQueueFamilyProperties);
 

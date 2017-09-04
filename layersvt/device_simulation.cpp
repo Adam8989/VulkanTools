@@ -904,6 +904,8 @@ assert(dt->EnumerateInstanceExtensionProperties);
         dt->GetPhysicalDeviceFeatures(physical_device, &pdd.physical_device_features_);
         dt->GetPhysicalDeviceMemoryProperties(physical_device, &pdd.physical_device_memory_properties_);
 
+// void vkGetPhysicalDeviceQueueFamilyProperties( VkPhysicalDevice physicalDevice, uint32_t* pQueueFamilyPropertyCount, VkQueueFamilyProperties* pQueueFamilyProperties);
+
 #ifdef ENABLE_DEVICE_EXTENSIONS
         // Get list of device extensions from all layers, including null_layer
 assert(dt->EnumerateDeviceExtensionProperties);

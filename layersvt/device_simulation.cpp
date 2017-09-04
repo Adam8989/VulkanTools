@@ -332,7 +332,7 @@ class JsonLoader {
     }
 
     void GetArray(const Json::Value &value, int count, uint8_t *dest) {
-        if (!value.isNull()) {
+        if (value.type() == Json::arrayValue) {
             for (int i = 0; i < count; ++i) {
                 dest[i] = value[i].asUInt();
             }
@@ -340,7 +340,7 @@ class JsonLoader {
     }
 
     void GetArray(const Json::Value &value, int count, uint32_t *dest) {
-        if (!value.isNull()) {
+        if (value.type() == Json::arrayValue) {
             for (int i = 0; i < count; ++i) {
                 dest[i] = value[i].asUInt();
             }
@@ -348,7 +348,7 @@ class JsonLoader {
     }
 
     void GetArray(const Json::Value &value, int count, float *dest) {
-        if (!value.isNull()) {
+        if (value.type() == Json::arrayValue) {
             for (int i = 0; i < count; ++i) {
                 dest[i] = value[i].asFloat();
             }
@@ -356,7 +356,7 @@ class JsonLoader {
     }
 
     void GetArray(const Json::Value &value, int count, char *dest) {
-        if (!value.isNull()) {
+        if (value.type() == Json::stringValue) {
             dest[0] = '\0';
             strncpy(dest, value.asCString(), count);
             dest[count - 1] = '\0';
@@ -383,8 +383,8 @@ bool JsonLoader::LoadFile(const char *filename) {
     }
     json_file.close();
 
-    if (!root.isObject()) {
-        ErrorPrintf("Json document root is not an object\n");
+    if (root.type() != Json::objectValue) {
+        DebugPrintf("Json document root is not an object\n");
         return false;
     }
     DebugPrintf("\t\tJsonLoader::LoadFile() OK\n");
@@ -430,10 +430,7 @@ JsonLoader::SchemaId JsonLoader::IdentifySchema(const Json::Value &value) {
 
 void JsonLoader::ApplyOverrides(const Json::Value &value, VkPhysicalDeviceProperties *dest) {
     DebugPrintf("\t\tJsonLoader::ApplyOverrides() VkPhysicalDeviceProperties\n");
-    if (value.isNull()) {
-        return;
-    } else if (!value.isObject()) {
-        ErrorPrintf("JSON element \"VkPhysicalDeviceProperties\" is not an object\n");
+    if (value.type() != Json::objectValue) {
         return;
     }
 
@@ -450,10 +447,7 @@ void JsonLoader::ApplyOverrides(const Json::Value &value, VkPhysicalDeviceProper
 
 void JsonLoader::ApplyOverrides(const Json::Value &value, VkPhysicalDeviceLimits *dest) {
     DebugPrintf("\t\tJsonLoader::ApplyOverrides() VkPhysicalDeviceLimits\n");
-    if (value.isNull()) {
-        return;
-    } else if (!value.isObject()) {
-        ErrorPrintf("JSON element \"limits\" is not an object\n");
+    if (value.type() != Json::objectValue) {
         return;
     }
 
@@ -567,10 +561,7 @@ void JsonLoader::ApplyOverrides(const Json::Value &value, VkPhysicalDeviceLimits
 
 void JsonLoader::ApplyOverrides(const Json::Value &value, VkPhysicalDeviceSparseProperties *dest) {
     DebugPrintf("\t\tJsonLoader::ApplyOverrides() VkPhysicalDeviceSparseProperties\n");
-    if (value.isNull()) {
-        return;
-    } else if (!value.isObject()) {
-        ErrorPrintf("JSON element \"sparseProperties\" is not an object\n");
+    if (value.type() != Json::objectValue) {
         return;
     }
 
@@ -583,10 +574,7 @@ void JsonLoader::ApplyOverrides(const Json::Value &value, VkPhysicalDeviceSparse
 
 void JsonLoader::ApplyOverrides(const Json::Value &value, VkPhysicalDeviceFeatures *dest) {
     DebugPrintf("\t\tJsonLoader::ApplyOverrides() VkPhysicalDeviceFeatures\n");
-    if (value.isNull()) {
-        return;
-    } else if (!value.isObject()) {
-        ErrorPrintf("JSON element \"VkPhysicalDeviceFeatures\" is not an object\n");
+    if (value.type() != Json::objectValue) {
         return;
     }
 

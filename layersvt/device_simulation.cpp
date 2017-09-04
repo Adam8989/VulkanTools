@@ -228,6 +228,11 @@ VkResult EnumerateAll(std::vector<T> *vect, std::function<VkResult(uint32_t *, T
     return result;
 }
 
+template <typename T>
+void VectorAppend( T *dst, const T *src) {
+dst->insert(dst->end(), src->begin(), src->end());
+}
+
 // Global variables //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 std::mutex global_lock;  // Enforce thread-safety for this layer's containers.

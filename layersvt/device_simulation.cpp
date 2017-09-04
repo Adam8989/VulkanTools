@@ -839,6 +839,8 @@ VKAPI_ATTR VkResult VKAPI_CALL CreateInstance(const VkInstanceCreateInfo *pCreat
         return result;
     }
 
+// TODO: What to do if multiple instances are created?  Maintain a vector of all instances?
+
     // Our layer-specific initialization...
 
     DebugPrintf("%s version %d.%d.%d\n", kOurLayerName, kVersionDevsimMajor, kVersionDevsimMinor, kVersionDevsimPatch);
@@ -1013,6 +1015,7 @@ VkResult EnumerateProperties(uint32_t src_count, const T *src_props, uint32_t *d
 
 VKAPI_ATTR VkResult VKAPI_CALL EnumerateInstanceLayerProperties(uint32_t *pCount, VkLayerProperties *pProperties) {
     DebugPrintf("EnumerateInstanceLayerProperties\n");
+    // TODO should this terminate or call-down?
     return EnumerateProperties(kLayerPropertiesCount, kLayerProperties, pCount, pProperties);
 }
 
@@ -1024,6 +1027,7 @@ VKAPI_ATTR VkResult VKAPI_CALL EnumerateInstanceExtensionProperties(const char *
     if (pLayerName && !strcmp(pLayerName, kOurLayerName)) {
         return EnumerateProperties(kExtensionPropertiesCount, kExtensionProperties, pCount, pProperties);
     }
+    // TODO should this terminate or call-down?
     return VK_ERROR_LAYER_NOT_PRESENT;
 }
 
@@ -1036,6 +1040,7 @@ VKAPI_ATTR VkResult VKAPI_CALL EnumerateDeviceExtensionProperties(VkPhysicalDevi
     if (pLayerName && !strcmp(pLayerName, kOurLayerName)) {
         return EnumerateProperties(kExtensionPropertiesCount, kExtensionProperties, pCount, pProperties);
     }
+    // TODO should this terminate or call-down?
     return dt->EnumerateDeviceExtensionProperties(physicalDevice, pLayerName, pCount, pProperties);
 }
 

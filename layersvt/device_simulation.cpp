@@ -847,6 +847,22 @@ VKAPI_ATTR VkResult VKAPI_CALL CreateInstance(const VkInstanceCreateInfo *pCreat
 
     const auto dt = instance_dispatch_table(*pInstance);
 
+#ifdef ENABLE_INSTANCE_LAYERS
+    // Get list of instance layers (Remember: device layers are deprecated)
+assert(dt->EnumerateInstanceLayerProperties);
+    instance_arrayof_layer_properties.clear();
+    result = EnumerateAll<VkLayerProperties>(&instance_arrayof_layer_properties, [&](uint32_t *count, VkLayerProperties *results) {
+        return dt->EnumerateInstanceLayerProperties(count, results);
+    });
+    if (result) {
+        return result;
+    }
+
+    // Temporarily append a "null_layer" as a proxy for pLayerName==NULL in Enumerate*ExtensionProperties().
+    const VkLayerProperties null_layer = {"", 0, 0, ""};
+    instance_arrayof_layer_properties.push_back(null_layer);
+#endif
+
     std::vector<VkPhysicalDevice> physical_devices;
     result = EnumerateAll<VkPhysicalDevice>(&physical_devices, [&](uint32_t *count, VkPhysicalDevice *results) {
         return dt->EnumeratePhysicalDevices(*pInstance, count, results);
@@ -863,6 +879,16 @@ VKAPI_ATTR VkResult VKAPI_CALL CreateInstance(const VkInstanceCreateInfo *pCreat
         dt->GetPhysicalDeviceProperties(physical_device, &pdd.physical_device_properties_);
         dt->GetPhysicalDeviceFeatures(physical_device, &pdd.physical_device_features_);
         dt->GetPhysicalDeviceMemoryProperties(physical_device, &pdd.physical_device_memory_properties_);
+
+#ifdef ENABLE_INSTANCE_LAYERS
+        // Remove the temporary null_layer
+        assert(instance_arrayof_layer_properties.size() > 0);
+        instance_arrayof_layer_properties.pop_back();
+
+        // TODO Is it really useful to preserve instance_arrayof_layer_properties?
+        // TODO Seems that DevSim is not the way to modify Layers; use the Loader's capabilities.
+        // TODO Should Instance Extensions be appended to each Devices' Extension list?
+#endif
 
         // Apply override values from the configuration file.
         JsonLoader json_loader(pdd);

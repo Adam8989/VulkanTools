@@ -57,8 +57,9 @@ namespace {
 
 // Global constants //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// When making minor changes to this layer, please increment the patch level, and be sure the new version is also updated in
-// the layersvt/{linux|windows}/VkLayer_device_simulation.json files.
+// For new features/functionality, increment the minor level and reset patch level to zero.
+// For any changes, at least increment the patch level.
+// When making ANY changes to the version, be sure to also update layersvt/{linux|windows}/VkLayer_device_simulation.json
 const uint32_t kVersionDevsimMajor = 1;
 const uint32_t kVersionDevsimMinor = 0;
 const uint32_t kVersionDevsimPatch = 2;

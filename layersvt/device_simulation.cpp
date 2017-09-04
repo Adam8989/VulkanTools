@@ -906,6 +906,21 @@ assert(dt->EnumerateInstanceExtensionProperties);
 
 // void vkGetPhysicalDeviceQueueFamilyProperties( VkPhysicalDevice physicalDevice, uint32_t* pQueueFamilyPropertyCount, VkQueueFamilyProperties* pQueueFamilyProperties);
 
+#if 0
+void vkGetPhysicalDeviceFormatProperties( VkPhysicalDevice physicalDevice, VkFormat format, VkFormatProperties* pFormatProperties);
+  VkFormatProperties format_properties = {};
+  for (VkFormat format = VK_FORMAT_R4G4_UNORM_PACK8;
+       format <= VK_FORMAT_END_RANGE;
+       format = static_cast<VkFormat>(format + 1)) {
+    vkGetPhysicalDeviceFormatProperties(physical_device, format, &format_properties);
+    if (format_properties.linearTilingFeatures ||
+        format_properties.optimalTilingFeatures ||
+        format_properties.bufferFeatures) {
+      device.formats.insert(std::make_pair(format, format_properties));
+    }
+  }
+#endif
+
 #ifdef ENABLE_DEVICE_EXTENSIONS
         // Get list of device extensions from all layers, including null_layer
 assert(dt->EnumerateDeviceExtensionProperties);

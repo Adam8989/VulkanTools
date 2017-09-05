@@ -240,6 +240,7 @@ typedef std::vector<VkQueueFamilyProperties> ArrayOfVkQueueFamilyProperties;
 typedef std::vector<VkFormatProperties> ArrayOfVkFormatProperties;
 
 ArrayOfVkLayerProperties instance_arrayof_layer_properties;
+ArrayOfVkExtensionProperties instance_arrayof_extension_properties;
 
 // PhysicalDeviceData : creates and manages the simulated device configurations //////////////////////////////////////////////////
 

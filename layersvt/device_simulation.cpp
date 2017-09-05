@@ -315,6 +315,8 @@ class JsonLoader {
     void ApplyOverrides(const Json::Value &value, ArrayOfVkFormatProperties *dest);
     void ApplyOverrides(const Json::Value &value, VkQueueFamilyProperties *dest);
     void ApplyOverrides(const Json::Value &value, ArrayOfVkQueueFamilyProperties *dest);
+    void ApplyOverrides(const Json::Value &value, VkLayerProperties *dest);
+    void ApplyOverrides(const Json::Value &value, ArrayOfVkLayerProperties *dest);
 
     void GetValue(const Json::Value &value, float *dest) {
         if (!value.isNull()) {
@@ -735,6 +737,26 @@ void JsonLoader::ApplyOverrides(const Json::Value &value, VkFormatProperties *de
 
 void JsonLoader::ApplyOverrides(const Json::Value &value, ArrayOfVkFormatProperties *dest){
     DebugPrintf("\t\tJsonLoader::ApplyOverrides() ArrayOfVkFormatProperties\n");
+    if (value.type() != Json::arrayValue) {
+        return;
+    }
+    // TODO
+}
+
+void JsonLoader::ApplyOverrides(const Json::Value &value, VkLayerProperties *dest){
+    DebugPrintf("\t\tJsonLoader::ApplyOverrides() VkLayerProperties\n");
+    if (value.type() != Json::objectValue) {
+        return;
+    }
+
+    GET_ARRAY(layerName, VK_MAX_EXTENSION_NAME_SIZE);
+    GET_VALUE(specVersion);
+    GET_VALUE(implementationVersion);
+    GET_ARRAY(description, VK_MAX_DESCRIPTION_SIZE);
+}
+
+void JsonLoader::ApplyOverrides(const Json::Value &value, ArrayOfVkLayerProperties *dest){
+    DebugPrintf("\t\tJsonLoader::ApplyOverrides() ArrayOfVkLayerProperties\n");
     if (value.type() != Json::arrayValue) {
         return;
     }

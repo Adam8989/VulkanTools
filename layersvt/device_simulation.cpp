@@ -266,6 +266,7 @@ class PhysicalDeviceData {
     VkPhysicalDeviceProperties physical_device_properties_;
     VkPhysicalDeviceFeatures physical_device_features_;
     VkPhysicalDeviceMemoryProperties physical_device_memory_properties_;
+    ArrayOfVkQueueFamilyProperties arrayof_queue_family_properties_;
     ArrayOfVkFormatProperties arrayof_format_properties_;
 
    private:
@@ -309,6 +310,8 @@ class JsonLoader {
     void ApplyOverrides(const Json::Value &value, VkPhysicalDeviceMemoryProperties *dest);
     void ApplyOverrides(const Json::Value &value, VkFormatProperties *dest);
     void ApplyOverrides(const Json::Value &value, ArrayOfVkFormatProperties *dest);
+    void ApplyOverrides(const Json::Value &value, VkQueueFamilyProperties *dest);
+    void ApplyOverrides(const Json::Value &value, ArrayOfVkQueueFamilyProperties *dest);
 
     void GetValue(const Json::Value &value, float *dest) {
         if (!value.isNull()) {
@@ -408,6 +411,7 @@ bool JsonLoader::LoadFile(const char *filename) {
             ApplyOverrides(root["VkPhysicalDeviceFeatures"], &pdd_.physical_device_features_);
             ApplyOverrides(root["VkPhysicalDeviceMemoryProperties"], &pdd_.physical_device_memory_properties_);
             ApplyOverrides(root["ArrayOfVkFormatProperties"], &pdd_.arrayof_format_properties_);
+            ApplyOverrides(root["ArrayOfVkQueueFamilyProperties"], &pdd_.arrayof_queue_family_properties_);
             break;
         case SchemaId::kUnknown:
         default:
@@ -647,6 +651,26 @@ void JsonLoader::ApplyOverrides(const Json::Value &value, VkPhysicalDeviceFeatur
     GET_VALUE(sparseResidencyAliased);
     GET_VALUE(variableMultisampleRate);
     GET_VALUE(inheritedQueries);
+}
+
+void JsonLoader::ApplyOverrides(const Json::Value &value, VkQueueFamilyProperties *dest){
+    DebugPrintf("\t\tJsonLoader::ApplyOverrides() VkQueueFamilyProperties\n");
+    if (value.type() != Json::objectValue) {
+        return;
+    }
+
+    GET_VALUE(queueFlags);
+    GET_VALUE(queueCount);
+    GET_VALUE(timestampValidBits);
+    ApplyOverrides(value["minImageTransferGranularity"], &dest->minImageTransferGranularity);
+}
+
+void JsonLoader::ApplyOverrides(const Json::Value &value, ArrayOfVkQueueFamilyProperties *dest){
+    DebugPrintf("\t\tJsonLoader::ApplyOverrides() ArrayOfVkQueueFamilyProperties\n");
+    if (value.type() != Json::arrayValue) {
+        return;
+    }
+    // TODO
 }
 
 void JsonLoader::ApplyOverrides(const Json::Value &value, VkMemoryType *dest){

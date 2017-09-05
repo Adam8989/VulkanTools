@@ -266,6 +266,7 @@ class PhysicalDeviceData {
     VkPhysicalDeviceProperties physical_device_properties_;
     VkPhysicalDeviceFeatures physical_device_features_;
     VkPhysicalDeviceMemoryProperties physical_device_memory_properties_;
+    ArrayOfVkFormatProperties arrayof_format_properties_;
 
    private:
     PhysicalDeviceData() = delete;
@@ -306,6 +307,8 @@ class JsonLoader {
     void ApplyOverrides(const Json::Value &value, VkMemoryType *dest);
     void ApplyOverrides(const Json::Value &value, VkMemoryHeap *dest);
     void ApplyOverrides(const Json::Value &value, VkPhysicalDeviceMemoryProperties *dest);
+    void ApplyOverrides(const Json::Value &value, VkFormatProperties *dest);
+    void ApplyOverrides(const Json::Value &value, ArrayOfVkFormatProperties *dest);
 
     void GetValue(const Json::Value &value, float *dest) {
         if (!value.isNull()) {
@@ -404,6 +407,7 @@ bool JsonLoader::LoadFile(const char *filename) {
             ApplyOverrides(root["VkPhysicalDeviceProperties"], &pdd_.physical_device_properties_);
             ApplyOverrides(root["VkPhysicalDeviceFeatures"], &pdd_.physical_device_features_);
             ApplyOverrides(root["VkPhysicalDeviceMemoryProperties"], &pdd_.physical_device_memory_properties_);
+            ApplyOverrides(root["ArrayOfVkFormatProperties"], &pdd_.arrayof_format_properties_);
             break;
         case SchemaId::kUnknown:
         default:
@@ -688,6 +692,26 @@ ApplyOverrides(root["VkPhysicalDeviceMemoryProperties"], &pdd_.physical_device_m
 
     dest->memoryTypeCount = 0;    // implicit from length of array
     dest->memoryHeapCount = 0;    // implicit from length of array
+}
+
+void JsonLoader::ApplyOverrides(const Json::Value &value, VkFormatProperties *dest){
+    DebugPrintf("\t\tJsonLoader::ApplyOverrides() VkFormatProperties\n");
+    if (value.type() != Json::objectValue) {
+        return;
+    }
+
+    // TODO GET_VALUE(formatID);
+    GET_VALUE(linearTilingFeatures);
+    GET_VALUE(optimalTilingFeatures);
+    GET_VALUE(bufferFeatures);
+}
+
+void JsonLoader::ApplyOverrides(const Json::Value &value, ArrayOfVkFormatProperties *dest){
+    DebugPrintf("\t\tJsonLoader::ApplyOverrides() ArrayOfVkFormatProperties\n");
+    if (value.type() != Json::arrayValue) {
+        return;
+    }
+    // TODO
 }
 
 #undef GET_VALUE

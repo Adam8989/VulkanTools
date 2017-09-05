@@ -320,6 +320,7 @@ class JsonLoader {
     void ApplyOverrides(const Json::Value &value, ArrayOfVkLayerProperties *dest);
     void ApplyOverrides(const Json::Value &value, VkExtensionProperties *dest);
     void ApplyOverrides(const Json::Value &value, ArrayOfVkExtensionProperties *dest);
+    void ApplyOverrides(const Json::Value &value, VkExtent3D *dest);
 
     void GetValue(const Json::Value &value, float *dest) {
         if (!value.isNull()) {
@@ -660,6 +661,17 @@ void JsonLoader::ApplyOverrides(const Json::Value &value, VkPhysicalDeviceFeatur
     GET_VALUE(sparseResidencyAliased);
     GET_VALUE(variableMultisampleRate);
     GET_VALUE(inheritedQueries);
+}
+
+void JsonLoader::ApplyOverrides(const Json::Value &value, VkExtent3D *dest){
+    DebugPrintf("\t\tJsonLoader::ApplyOverrides() VkExtent3D\n");
+    if (value.type() != Json::objectValue) {
+        return;
+    }
+
+    GET_VALUE(width);
+    GET_VALUE(height);
+    GET_VALUE(depth);
 }
 
 void JsonLoader::ApplyOverrides(const Json::Value &value, VkQueueFamilyProperties *dest){

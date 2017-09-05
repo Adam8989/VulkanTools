@@ -269,6 +269,7 @@ class PhysicalDeviceData {
     VkPhysicalDeviceProperties physical_device_properties_;
     VkPhysicalDeviceFeatures physical_device_features_;
     VkPhysicalDeviceMemoryProperties physical_device_memory_properties_;
+    ArrayOfVkExtensionProperties arrayof_extension_properties_;
     ArrayOfVkQueueFamilyProperties arrayof_queue_family_properties_;
     ArrayOfVkFormatProperties arrayof_format_properties_;
 
@@ -317,6 +318,8 @@ class JsonLoader {
     void ApplyOverrides(const Json::Value &value, ArrayOfVkQueueFamilyProperties *dest);
     void ApplyOverrides(const Json::Value &value, VkLayerProperties *dest);
     void ApplyOverrides(const Json::Value &value, ArrayOfVkLayerProperties *dest);
+    void ApplyOverrides(const Json::Value &value, VkExtensionProperties *dest);
+    void ApplyOverrides(const Json::Value &value, ArrayOfVkExtensionProperties *dest);
 
     void GetValue(const Json::Value &value, float *dest) {
         if (!value.isNull()) {
@@ -417,6 +420,7 @@ bool JsonLoader::LoadFile(const char *filename) {
             ApplyOverrides(root["VkPhysicalDeviceMemoryProperties"], &pdd_.physical_device_memory_properties_);
             ApplyOverrides(root["ArrayOfVkFormatProperties"], &pdd_.arrayof_format_properties_);
             ApplyOverrides(root["ArrayOfVkQueueFamilyProperties"], &pdd_.arrayof_queue_family_properties_);
+            ApplyOverrides(root["ArrayOfVkExtensionProperties"], &pdd_.arrayof_extension_properties_);
             break;
         case SchemaId::kUnknown:
         default:
@@ -757,6 +761,25 @@ void JsonLoader::ApplyOverrides(const Json::Value &value, VkLayerProperties *des
 
 void JsonLoader::ApplyOverrides(const Json::Value &value, ArrayOfVkLayerProperties *dest){
     DebugPrintf("\t\tJsonLoader::ApplyOverrides() ArrayOfVkLayerProperties\n");
+    if (value.type() != Json::arrayValue) {
+        return;
+    }
+    // TODO
+}
+
+void JsonLoader::ApplyOverrides(const Json::Value &value, VkExtensionProperties *dest){
+    DebugPrintf("\t\tJsonLoader::ApplyOverrides() VkExtensionProperties\n");
+    if (value.type() != Json::objectValue) {
+        return;
+    }
+    // TODO
+
+    GET_ARRAY(extensionName, VK_MAX_EXTENSION_NAME_SIZE);
+    GET_VALUE(specVersion);
+}
+
+void JsonLoader::ApplyOverrides(const Json::Value &value, ArrayOfVkExtensionProperties *dest){
+    DebugPrintf("\t\tJsonLoader::ApplyOverrides() ArrayOfVkExtensionProperties\n");
     if (value.type() != Json::arrayValue) {
         return;
     }

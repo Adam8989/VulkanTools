@@ -260,6 +260,7 @@ class PhysicalDeviceData {
 
     VkPhysicalDeviceProperties physical_device_properties_;
     VkPhysicalDeviceFeatures physical_device_features_;
+    VkPhysicalDeviceMemoryProperties physical_device_memory_properties_;
 
    private:
     PhysicalDeviceData() = delete;
@@ -297,6 +298,9 @@ class JsonLoader {
     void ApplyOverrides(const Json::Value &value, VkPhysicalDeviceLimits *dest);
     void ApplyOverrides(const Json::Value &value, VkPhysicalDeviceSparseProperties *dest);
     void ApplyOverrides(const Json::Value &value, VkPhysicalDeviceFeatures *dest);
+    void ApplyOverrides(const Json::Value &value, VkMemoryType *dest);
+    void ApplyOverrides(const Json::Value &value, VkMemoryHeap *dest);
+    void ApplyOverrides(const Json::Value &value, VkPhysicalDeviceMemoryProperties *dest);
 
     void GetValue(const Json::Value &value, float *dest) {
         if (!value.isNull()) {
@@ -394,6 +398,7 @@ bool JsonLoader::LoadFile(const char *filename) {
         case SchemaId::kDevsim100:
             ApplyOverrides(root["VkPhysicalDeviceProperties"], &pdd_.physical_device_properties_);
             ApplyOverrides(root["VkPhysicalDeviceFeatures"], &pdd_.physical_device_features_);
+            ApplyOverrides(root["VkPhysicalDeviceMemoryProperties"], &pdd_.physical_device_memory_properties_);
             break;
         case SchemaId::kUnknown:
         default:
@@ -635,6 +640,51 @@ void JsonLoader::ApplyOverrides(const Json::Value &value, VkPhysicalDeviceFeatur
     GET_VALUE(inheritedQueries);
 }
 
+void JsonLoader::ApplyOverrides(const Json::Value &value, VkMemoryType *dest){
+    DebugPrintf("\t\tJsonLoader::ApplyOverrides() VkMemoryType\n");
+    if (value.type() != Json::objectValue) {
+        return;
+    }
+
+    GET_VALUE(propertyFlags);
+    GET_VALUE(heapIndex);
+}
+
+void JsonLoader::ApplyOverrides(const Json::Value &value, VkMemoryHeap *dest){
+    DebugPrintf("\t\tJsonLoader::ApplyOverrides() VkMemoryHeap\n");
+    if (value.type() != Json::objectValue) {
+        return;
+    }
+
+    GET_VALUE(size);
+    GET_VALUE(flags);
+}
+
+void JsonLoader::ApplyOverrides(const Json::Value &value, VkPhysicalDeviceMemoryProperties *dest){
+    DebugPrintf("\t\tJsonLoader::ApplyOverrides() VkPhysicalDeviceMemoryProperties\n");
+    if (value.type() != Json::objectValue) {
+        return;
+    }
+    // TODO
+/*
+ApplyOverrides(root["VkPhysicalDeviceMemoryProperties"], &pdd_.physical_device_memory_properties_);
+"VkPhysicalDeviceMemoryProperties": {
+    "properties": {
+        "memoryTypes": {"type": "array", "maxItems": 32, "items": {"$ref": "#/definitions/VkMemoryType"}},
+        "memoryHeaps": {"type": "array", "maxItems": 16, "items": {"$ref": "#/definitions/VkMemoryHeap"}}
+    }
+},
+#define VK_MAX_MEMORY_TYPES               32
+#define VK_MAX_MEMORY_HEAPS               16
+*/
+
+    // TODO VkMemoryType    memoryTypes[VK_MAX_MEMORY_TYPES];
+    // TODO VkMemoryHeap    memoryHeaps[VK_MAX_MEMORY_HEAPS];
+
+    dest->memoryTypeCount = 0;    // implicit from length of array
+    dest->memoryHeapCount = 0;    // implicit from length of array
+}
+
 #undef GET_VALUE
 #undef GET_ARRAY
 
@@ -699,6 +749,7 @@ VKAPI_ATTR VkResult VKAPI_CALL CreateInstance(const VkInstanceCreateInfo *pCreat
         // Initialize PDD to the actual Vulkan implementation's defaults.
         dt->GetPhysicalDeviceProperties(physical_device, &pdd.physical_device_properties_);
         dt->GetPhysicalDeviceFeatures(physical_device, &pdd.physical_device_features_);
+        dt->GetPhysicalDeviceMemoryProperties(physical_device, &pdd.physical_device_memory_properties_);
 
         // Apply override values from the configuration file.
         JsonLoader json_loader(pdd);

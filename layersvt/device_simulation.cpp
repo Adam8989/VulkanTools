@@ -234,6 +234,11 @@ std::mutex global_lock;  // Enforce thread-safety for this layer's containers.
 
 uint32_t loader_layer_iface_version = CURRENT_LOADER_LAYER_INTERFACE_VERSION;
 
+typedef std::vector<VkLayerProperties> ArrayOfVkLayerProperties;
+typedef std::vector<VkExtensionProperties> ArrayOfVkExtensionProperties;
+typedef std::vector<VkQueueFamilyProperties> ArrayOfVkQueueFamilyProperties;
+typedef std::vector<VkFormatProperties> ArrayOfVkFormatProperties;
+
 // PhysicalDeviceData : creates and manages the simulated device configurations //////////////////////////////////////////////////
 
 class PhysicalDeviceData {

@@ -46,6 +46,22 @@ RES=$?
 rm ${FILENAME_01_OUT}
 
 #############################################################################
+# Test #2 input datafile, and filename of output.
+
+FILENAME_02_IN="devsim_test2.json"
+FILENAME_02_GOLD="devsim_test2_gold.json"
+FILENAME_02_OUT="device_simulation_layer_test_2.json"
+
+export VK_DEVSIM_FILENAME="${PWD}/${FILENAME_02_IN}"
+${VKJSON_INFO} > /dev/null
+
+# compare vkjson output against gold
+NUM_LINES=$(cut -f1 -d' ' <(wc -l ${FILENAME_02_GOLD}))
+diff ${FILENAME_02_GOLD} <(head -n ${NUM_LINES} ${FILENAME_02_OUT}) >/dev/null
+RES=$?
+rm ${FILENAME_02_OUT}
+
+#############################################################################
 
 if [ "$RES" -eq 0 ] ; then
    printf "$GREEN[  PASSED  ]$NC ${PGM}\n"

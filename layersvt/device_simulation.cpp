@@ -840,6 +840,10 @@ VKAPI_ATTR VkResult VKAPI_CALL EnumerateDeviceExtensionProperties(VkPhysicalDevi
     return dt->EnumerateDeviceExtensionProperties(physicalDevice, pLayerName, pCount, pProperties);
 }
 
+VKAPI_ATTR void VKAPI_CALL GetPhysicalDeviceMemoryProperties( VkPhysicalDevice physicalDevice, VkPhysicalDeviceMemoryProperties* pMemoryProperties) {
+// TODO
+}
+
 VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL GetInstanceProcAddr(VkInstance instance, const char *pName) {
 // Apply the DRY principle, see https://en.wikipedia.org/wiki/Don%27t_repeat_yourself
 #define GET_PROC_ADDR(func) \
@@ -852,6 +856,7 @@ VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL GetInstanceProcAddr(VkInstance instance
     GET_PROC_ADDR(DestroyInstance);
     GET_PROC_ADDR(GetPhysicalDeviceProperties);
     GET_PROC_ADDR(GetPhysicalDeviceFeatures);
+    GET_PROC_ADDR(GetPhysicalDeviceMemoryProperties);
 #undef GET_PROC_ADDR
 
     if (!instance) {
@@ -866,6 +871,7 @@ VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL GetInstanceProcAddr(VkInstance instance
     }
     return dt->GetInstanceProcAddr(instance, pName);
 }
+
 
 }  // anonymous namespace
 

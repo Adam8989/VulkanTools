@@ -38,7 +38,7 @@
 #include "vkreplay_window.h"
 #include "screenshot_parsing.h"
 
-vkreplayer_settings replaySettings = {NULL, 1, -1, -1, NULL, NULL, NULL};
+vkreplayer_settings replaySettings = {NULL, 1, -1, -1, NULL, NULL, NULL, NULL};
 
 vktrace_SettingInfo g_settings_info[] = {
     {"o",
@@ -111,6 +111,15 @@ vktrace_SettingInfo g_settings_info[] = {
      TRUE,
      "Verbosity mode. Modes are \"quiet\", \"errors\", \"warnings\", "
      "\"full\"."},
+#endif
+#if defined PLATFORM_LINUX
+     {"ds",
+      "DisplayServer",
+      VKTRACE_SETTING_STRING,
+      {&replaySettings.displayServer},
+      {&replaySettings.displayServer},
+      TRUE,
+      "Display server used for replay. Options are \"xcb\", \"wayland\"."},
 #endif
 };
 

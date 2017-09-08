@@ -330,7 +330,7 @@ class JsonLoader {
         }
     }
 
-    void GetArray(const Json::Value &value, int count, uint8_t *dest) {
+    void GetArray(const Json::Value &value, uint8_t *dest, int count) {
         if (!value.isNull()) {
             for (int i = 0; i < count; ++i) {
                 dest[i] = value[i].asUInt();
@@ -338,7 +338,7 @@ class JsonLoader {
         }
     }
 
-    void GetArray(const Json::Value &value, int count, uint32_t *dest) {
+    void GetArray(const Json::Value &value, uint32_t *dest, int count) {
         if (!value.isNull()) {
             for (int i = 0; i < count; ++i) {
                 dest[i] = value[i].asUInt();
@@ -346,7 +346,7 @@ class JsonLoader {
         }
     }
 
-    void GetArray(const Json::Value &value, int count, float *dest) {
+    void GetArray(const Json::Value &value, float *dest, int count) {
         if (!value.isNull()) {
             for (int i = 0; i < count; ++i) {
                 dest[i] = value[i].asFloat();
@@ -354,7 +354,7 @@ class JsonLoader {
         }
     }
 
-    void GetArray(const Json::Value &value, int count, char *dest) {
+    void GetArray(const Json::Value &value, char *dest, int count) {
         if (!value.isNull()) {
             dest[0] = '\0';
             strncpy(dest, value.asCString(), count);
@@ -425,7 +425,7 @@ JsonLoader::SchemaId JsonLoader::IdentifySchema(const Json::Value &value) {
 
 // Apply the DRY principle, see https://en.wikipedia.org/wiki/Don%27t_repeat_yourself
 #define GET_VALUE(x) GetValue(value[#x], &dest->x)
-#define GET_ARRAY(x, n) GetArray(value[#x], n, dest->x)
+#define GET_ARRAY(x, n) GetArray(value[#x], dest->x, n)
 
 void JsonLoader::ApplyOverrides(const Json::Value &value, VkPhysicalDeviceProperties *dest) {
     DebugPrintf("\t\tJsonLoader::ApplyOverrides() VkPhysicalDeviceProperties\n");

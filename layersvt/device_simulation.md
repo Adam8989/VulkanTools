@@ -13,7 +13,7 @@ Application code can be tested to verify it responds correctly to the capabiliti
 
 The DevSim layer does not enforce the capabilities returned by queries.  The application is still responsible for querying and complying with the capabilities reported.  If an application erroneously attempts to overcommit a resource, or use a disabled feature, the DevSim layer will not generate errors.  To detect such errors, use the Vulkan Validation layers, as with any non-simulated device.
 
-The DevSim layer will work with other Vulkan layers, such as Validation.  When configuring the order of the layers list, the DevSim layer should be "last"; i.e.: closest to the driver, farthest from the application.  That will allow the Validation layer to see the results of the DevSim layer, and permit Validation to enforce the simulated capabilities.
+The DevSim layer will work with other Vulkan layers, such as Validation.  When configuring the order of the layers list, the DevSim layer should be "last"; i.e.: closest to the driver, farthest from the application.  That allows the Validation layer to see the results of the DevSim layer, and permit Validation to enforce the simulated capabilities.
 
 Please report issues to the [GitHub VulkanTools repository](https://github.com/LunarG/VulkanTools/issues) and include "DevSim" in the title text.
 
@@ -32,12 +32,13 @@ The top-level sections of a configuration file are specified by the DevSim JSON 
 * `comments` - Optional.  May contain arbitrary comments, description, copyright, etc.
 * `VkPhysicalDeviceProperties` - Optional.  May contain valid name/value overrides.
 * `VkPhysicalDeviceFeatures` - Optional.  May contain valid name/value overrides.
+* The remaining top-level sections of the schema are not yet supported by DevSim.
 
-Other top-level sections of the schema are not yet supported.
+The schema permits additional top-level sections to be optionally included in configuration files.
 
-The schema permits additional top-level sections to be optionally added to a configuration files.
-
-The schema will perform basic range checking for common Vulkan data types, but it cannot detect if a particular configuration makes no sense.  Also, if the configuration attempts to add capabilities beyond what the actual device is natively capable of providing, then the results are undefined.
+The schema defines basic range checking for common Vulkan data types, but it cannot detect if a particular configuration makes no sense.
+If a configuration defines capabilities beyond what the actual device is natively capable of providing, the results are undefined.
+DevSim has some checking of configuration values and, if enabled, writes debug messages for values that exceed the capabilities of the actual device.
 
 ## Example of a DevSim JSON configuration file
 ```json
@@ -62,8 +63,8 @@ The schema will perform basic range checking for common Vulkan data types, but i
 ## Environment variables used by DevSim layer.
 
 * `VK_DEVSIM_FILENAME` - Name of the configuration file to load.
-* `VK_DEVSIM_DEBUG_ENABLE` - A non-zero integer will enable debugging output.
-* `VK_DEVSIM_EXIT_ON_ERROR` - A non-zero integer will enable exit-on-error.
+* `VK_DEVSIM_DEBUG_ENABLE` - A non-zero integer enables debug message output.
+* `VK_DEVSIM_EXIT_ON_ERROR` - A non-zero integer enables exit-on-error.
 
 ## Example using the DevSim layer
 ```bash
